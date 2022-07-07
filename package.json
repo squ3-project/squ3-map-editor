@@ -1,0 +1,12 @@
+{
+  "name": "map-editor",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "pck"
+  },
+  "devDependencies": {
+    "nicepck": "^1.1.3"
+  }
+}

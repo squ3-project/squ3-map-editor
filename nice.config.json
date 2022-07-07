@@ -1,0 +1,6 @@
+{
+  "htmlTemplate": "html",
+  "entries": [
+    "./src/index.ts"
+  ]
+}
