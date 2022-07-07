@@ -7,7 +7,11 @@ export default class Block{
         this.id = _id
         this.x = _x
         this.y = _y
-        
+
+    }
+
+    public getId():number{
+        return this.id
     }
 
     public getPosition():[number, number]{

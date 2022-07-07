@@ -3,9 +3,12 @@ import DrawingLayer from "./DrawingLayer";
 import MouseLayer from "./MouseLayer";
 import {getMousePos} from "./MousePos"
 import { changeBrush, getBrush } from "./ToggleBrush";
+import {MapBefore, MapAfter, Structure, Portal, Interactions} from './MapInterfaces'
 import Atlas from "./Atlas"
 import './style.scss'
 import Block from "./Block";
+import atlasImg from './assets/img/atlas.png'
+
 
 let mouseDown:boolean = false;
 
@@ -14,6 +17,8 @@ const eraserElement = document.getElementById('eraser-icon') as HTMLImageElement
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 const ctx:CanvasRenderingContext2D = canvas?.getContext("2d") as CanvasRenderingContext2D;
 const backgroundBlockIdInput = document.getElementById('backgroundBlockId') as HTMLInputElement
+const saveBtn = document.getElementById('save-button') as HTMLElement
+
 canvas!.height = 720
 canvas!.width = 720
 let backgroundLayer:BackgroundLayer
@@ -21,15 +26,22 @@ let mouseLayer:MouseLayer
 let drawingLayer:DrawingLayer
 let atlas:Atlas
 let selectedBrush:number = 1
-let selectedBlockId:number = 8
+let selectedBlockId:number = 1
 
 const blocksPlaced:Block[] = []
+
+
+let backgroundBlockId:number = 0
+let stuctures:Structure[]
+// let interactions = []
+
+const atlasUrl = atlasImg
 
 
 start()
 
 async function start(){
-    atlas = new Atlas("http://192.168.8.101:4444/getatlas")
+    atlas = new Atlas(atlasUrl)
     backgroundLayer = new BackgroundLayer(atlas)
     mouseLayer = new MouseLayer()
     await atlas.loadImage()
@@ -39,6 +51,7 @@ async function start(){
     changeCursor()
     createTextureSelector()
 }
+
 brushElement.addEventListener("click", () => {
     // changeBrush(1)
     selectedBrush = 1
@@ -55,17 +68,59 @@ backgroundBlockIdInput.addEventListener("keyup", function(e:Event){
     const id = parseInt(this.value)
     if(id && id < 10000){
         backgroundLayer.drawBackgorund(id)
+        backgroundBlockId = id
         updateLayers()
     }
 }) 
 
 function createTextureSelector(){
-    const url = "http://192.168.8.101:4444/getatlas"
+    const url = atlasUrl
     for (let i = 1; i < 10; i++) {
         const createdTile = createTile(i, url)
         document.getElementById("texture-selector-container")?.append(createdTile)
     }
 }
+
+function calcutePositionInArray(x:number, y:number):number{
+    return x + y*30
+}
+
+function createMapObject(){
+    const mapObj:MapBefore = { backgroundBlock: backgroundBlockId, structures: [], interactions: []}
+
+    const mapAfter:MapAfter = {backgroundBlockId: 0, mapString: "", collisionString: "", interactions: []}
+
+    blocksPlaced.forEach(block => {
+        const [x, y] = block.getPosition()
+        const id = block.getId()
+        mapObj.structures.push({id,x,y,c: false})
+
+    })
+
+    const len = 900
+
+    const mapArray:string[] = []
+    const collisionArray:string[] = []
+    for (let i = 0; i < len; i++) {
+        mapArray[i] = "x"
+        collisionArray[i] = "0"
+    }
+
+    
+    mapObj.structures.forEach((structure:Structure) => {
+        const position = calcutePositionInArray(structure.x, structure.y)
+        mapArray[position] = structure.id.toString()
+        if(structure.c) collisionArray[position] = "1"
+    })
+
+    mapAfter["backgroundBlockId"] = mapObj.backgroundBlock
+    mapAfter["mapString"] = mapArray.toString().replace(/,/g, ';')
+    mapAfter["collisionString"] = collisionArray.toString().replace(/,/g, '')
+    mapAfter["interactions"] = mapObj.interactions
+
+    return mapAfter
+}
+
 
 function createTile(_id:number, _url:string):HTMLDivElement{
     const tile = document.createElement('div')
@@ -96,7 +151,11 @@ function changeCursor(): void{
     })
 }
 
- document.addEventListener("mousedown", (event:MouseEvent) => {
+saveBtn.addEventListener("click", (e:Event) => {
+     console.log(createMapObject())
+})
+
+canvas.addEventListener("mousedown", (event:MouseEvent) => {
     let {x, y} = getMousePos(event, canvas);
 
 
@@ -121,7 +180,7 @@ function changeCursor(): void{
         updateLayers()
     }
 
-        document.addEventListener("mousemove", (event:MouseEvent) => {
+        canvas.addEventListener("mousemove", (event:MouseEvent) => {
             
 
             

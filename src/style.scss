@@ -135,3 +135,21 @@ html,body {
 #texture-tile:hover{
     cursor: pointer;
 }
+#save-container{
+    margin-top: 20px;
+    width: 14vw;
+    height: 60px;
+    @include flex-c();
+}
+#save-button{
+    margin-top: 30px;
+    @include flex-c();
+    height: 40px;
+    width: 80px;
+    background-color: $tile-lighter;
+    cursor: pointer;
+    margin-left: 25%;
+    padding-right: 4px;
+    padding-left: 4px;
+    border-radius: 6px;
+}
