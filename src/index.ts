@@ -2,10 +2,10 @@ import BackgroundLayer from "./BackgroundLayer";
 import DrawingLayer from "./DrawingLayer";
 import MouseLayer from "./MouseLayer";
 import {getMousePos} from "./MousePos"
-import { changeBrush } from "./ToggleBrush";
+import { changeBrush, getBrush } from "./ToggleBrush";
 import Atlas from "./Atlas"
-// import atlasImg from './assets/img/atlas.png'
 import './style.scss'
+import Block from "./Block";
 
 let mouseDown:boolean = false;
 
@@ -22,6 +22,8 @@ let drawingLayer:DrawingLayer
 let atlas:Atlas
 let selectedBrush:number = 1
 let selectedBlockId:number = 8
+
+const blocksPlaced:Block[] = []
 
 
 start()
@@ -55,7 +57,6 @@ backgroundBlockIdInput.addEventListener("keyup", function(e:Event){
         backgroundLayer.drawBackgorund(id)
         updateLayers()
     }
-    // console.log(this.value)
 }) 
 
 function createTextureSelector(){
@@ -65,13 +66,6 @@ function createTextureSelector(){
         document.getElementById("texture-selector-container")?.append(createdTile)
     }
 }
-
-// function createTiles(_img:HTMLImageElement){
-
-
-
-
-// }
 
 function createTile(_id:number, _url:string):HTMLDivElement{
     const tile = document.createElement('div')
@@ -104,13 +98,24 @@ function changeCursor(): void{
 
  document.addEventListener("mousedown", (event:MouseEvent) => {
     let {x, y} = getMousePos(event, canvas);
+
+
+    console.log(blocksPlaced.length)
+
+    // console.log(x, y)
+
+    const findBlock = blocksPlaced.find(block => block.getPosition()[0] === x && block.getPosition()[1] === y)
+
+    if(findBlock) return
+
     mouseDown = true
-    if(selectedBrush == 1){
+    if(getBrush() === 1){
         console.log('jest git (1)')
         drawingLayer.drawBlock(selectedBlockId, x, y)
+        blocksPlaced.push(new Block(selectedBlockId, x, y))
         updateLayers()
     }
-    if(selectedBrush == 0){
+    if(getBrush() === 0){
         console.log('jest eraser')
         drawingLayer.getCtx().clearRect(x,y,32,32)
         updateLayers()
@@ -118,11 +123,16 @@ function changeCursor(): void{
 
         document.addEventListener("mousemove", (event:MouseEvent) => {
             
+
             
             if(mouseDown == true){
-                if(1){
+                if(getBrush() === 1){
                     let {x, y} = getMousePos(event, canvas);
+
+                    const findBlock = blocksPlaced.find(block => block.getPosition()[0] === x && block.getPosition()[1] === y)
+                    if(findBlock) return
                     drawingLayer.drawBlock(selectedBlockId, x, y)
+                    blocksPlaced.push(new Block(selectedBlockId, x, y))
                     updateLayers()
                 }
 
