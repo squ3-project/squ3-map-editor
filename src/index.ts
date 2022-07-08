@@ -40,7 +40,7 @@ let stuctures:Structure[]
 
 // const atlasUrl = "http://192.168.8.101:4444/getatlas"
 
-const serverUrl = "http://squ3-server.herokuapp.com"
+const serverUrl = "https://squ3-server.herokuapp.com"
 const atlasUrl = serverUrl + "/getatlas"
 
 function updateLayers() {
