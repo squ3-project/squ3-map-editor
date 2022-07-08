@@ -85,7 +85,7 @@ backgroundBlockIdInput.addEventListener("keyup", function(e:Event){
 
 function createTextureSelector(){
     const url = atlasUrl
-    for (let i = 1; i < 10; i++) {
+    for (let i = 1; i < 100; i++) {
         const createdTile = createTile(i, url)
         document.getElementById("texture-selector-container")?.append(createdTile)
     }
