@@ -1,0 +1,84 @@
+.gui-left{
+    position: absolute;
+    background-color: black;
+    width: 14vw;
+    top: 0;
+    left: 0;
+    height: 100vh;
+}
+
+.gui-left-ctn-center{
+    height: 70vh;
+    margin-top: 15vh;
+    margin-bottom: 15vh;
+    width: 14vw;
+    left: 0;
+    background-color: $tile-light;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+.gui-left-content{
+    width: 12vw;
+    margin-left: 1vw;
+    margin-right: 1vw;
+    height: 50vh;
+    margin-top: 10vh;
+    margin-bottom: 10vh;
+    position: absolute;
+}
+.brush-container{
+    background-color: $tile-lighter;
+    @include flex-c();
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 12vw;
+    height: 80px;
+    top: 30%;
+    border-radius: 8px;
+}
+.brush-container:hover{
+    background-color: #57718b;
+    cursor: pointer;
+}
+#brush-icon{
+    width: 32px;
+    cursor: pointer;
+    margin: 6px;
+    padding: 6px;
+    background-color: #7392b1;
+    border-radius: 4px;
+    
+}
+.eraser-container{
+    background-color: $tile-lighter;
+    @include flex-c();
+    position: absolute;
+    left: 0;
+    width: 12vw;
+    height: 80px;
+    bottom: 30%;
+    border-radius: 8px;
+}
+.eraser-container:hover{
+    cursor: pointer;
+    background-color: #57718b;
+}
+#eraser-icon{
+    width: 32px;
+    margin: 6px;
+    cursor: pointer;
+    padding: 6px;
+    background-color: #7392b1;
+    border-radius: 4px;
+}
+
+// #utils-left{
+//     @include flex-c();
+//     position: absolute;
+//     margin-top: 10vh;
+//     margin-bottom: 10vh;
+//     padding: 0 !important;
+//     height: 50vh;
+//     width: 14vw;
+// }

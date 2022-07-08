@@ -1,0 +1,113 @@
+@import './mixins';
+
+
+.gui-right{
+
+    position: absolute;
+    background-color: black;
+    width: 14vw;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    
+    .gui-right-ctn-center{
+        border-top-left-radius: 6px;
+        border-bottom-left-radius: 6px;
+        height: 70vh;
+        margin-top: 15vh;
+        margin-bottom: 15vh;
+        width: 14vw;
+        right: 0;
+        background-color: $tile-light;
+
+        .gui-right-content{
+            position: absolute;
+            height: 60vh;
+            margin-top: 5vh;
+            margin-bottom: 5vh;
+            width: 12vw;
+            margin-left: 1vw;
+            margin-right: 1vw;
+        }
+    }
+}
+
+// base
+
+.texture-panel-title{
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 18px;
+    color: white;
+}
+#texture-panel{
+    @include flex-c();
+    #backgroundBlockId{
+        width: 12vw;
+        margin-bottom: 4px;
+        background-color: white;
+        margin-bottom: 14px;
+        border: none;
+        color: black;
+        border: 1px solid $tile-active;
+        outline: none;   
+    }
+    
+}
+#backgroundBlockId::placeholder{
+    color: grey;
+}
+
+.texture-selector-container-div{
+    background-color: $tile-dark;
+    height: 40vh;
+    width: 12vw;
+    overflow-y: auto;
+    #texture-selector-container{
+        margin: 12px 0px 8px 20px;
+        display: flex;
+        align-content: flex-start;
+        flex-wrap: wrap;
+        flex-direction: row;
+        row-gap: 4px;
+        height: 60vh;
+        gap: 10px;
+    }
+}
+
+#texture-tile{
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    margin: 2px;
+    border: 2px solid $tile-active;
+    border-radius: 6px;
+}
+#texture-tile:hover{
+    border: 2px solid $tile-activelight;
+    border-radius: 6px;
+}
+
+.reset-container{
+    width: 12vw;
+    background-color: $tile-activelight;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 18px;
+    color: white;
+}
+#reset-button{
+    cursor: pointer;
+    @include flex-c();
+    width: 12vw;
+}
+#save-button{
+    color: white;
+    border-radius: 6px;
+    margin-top: 2vh;
+    font-size: 18px;
+    background-color: $tile-activelight;
+    cursor: pointer;
+    @include flex-c();
+    width: 12vw;
+}

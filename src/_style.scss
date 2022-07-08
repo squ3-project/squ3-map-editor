@@ -1,0 +1,36 @@
+$tile-dark: #293949;
+$tile: #2c3e50;
+$tile-light: #34495e;
+$tile-lighter: #48627c;
+$tile-active: #57718b;
+$tile-activelight: #7591af; 
+$tile-activemax: #88a5c4;
+$text: #eeeeee;
+
+@import url('https://fonts.googleapis.com/css2?family=Mingzat&display=swap');
+@import './mixins';
+@import './leftGui';
+@import './rightGui';
+
+
+html,body {
+    color-scheme: dark;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: black;
+    color: lightblue;
+    font-family: 'Mingzat', sans-serif !important;
+}
+.main-ctn{
+    height: 100vh;
+    width: 100vw;
+    @include flex-c();
+}
+#canvas{
+    background-color: #48627c;
+}
+.utils-div{
+    height: 70vh;
+}

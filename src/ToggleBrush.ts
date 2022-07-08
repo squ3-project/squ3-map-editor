@@ -1,9 +1,7 @@
 let selectedBrush:number = 1
 
-function changeBrush(_id:number):number{
-
+function changeBrush(_id:number){
     selectedBrush = _id
-    return selectedBrush
 }
 
 function getBrush():number{
