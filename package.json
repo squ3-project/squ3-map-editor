@@ -1,12 +1,17 @@
 {
   "name": "map-editor",
+  "homepage": "http://squ3-project.github.io/squ3-map-editor",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "pck"
+    "dev": "pck",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d dist",
+    "build": "pck build"
   },
   "devDependencies": {
+    "gh-pages": "^4.0.0",
     "nicepck": "^1.1.3"
   }
 }

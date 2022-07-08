@@ -34,3 +34,13 @@ html,body {
 .utils-div{
     height: 70vh;
 }
+#map-id{
+    visibility: hidden;
+    @include flex-c();
+    position: absolute;
+    width: 70vw;
+    top:0;
+    margin-top: 2vh;
+    font-size: 18px;
+    color: white;
+}
