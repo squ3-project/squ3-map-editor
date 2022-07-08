@@ -17,4 +17,8 @@ export default class DrawingLayer extends Layer {
         const [sx, sy] = this.atlas.getBlockCoords(_id)
         this.ctx!.drawImage(this.atlas.getTexturesImage(), sx, sy, this.atlas.getBlockWidth(), this.atlas.getBlockWidth(), _x*24, _y*24, 24, 24)
     }
+
+    public eraseBlock(_x:number,_y:number){
+        this.ctx!.clearRect(_x*24,_y*24,24,24)
+    }
 }
