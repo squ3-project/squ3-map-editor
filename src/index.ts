@@ -176,7 +176,7 @@ saveBtn.addEventListener("click", async (e:Event) => {
     })
     const responseJson = await response.json()
     const mapIdP = document.getElementById('map-id') as HTMLElement
-    mapIdP.innerText = serverUrl + '/map?game=' + responseJson.id
+    mapIdP.innerText = serverUrl + '/game?id=' + responseJson.id
     mapIdP.style.visibility = "visible"
     console.log(responseJson)
 })
