@@ -25,7 +25,7 @@ interface MapAfter{
     backgroundBlockId:number
     mapString: string,
     collisionString: string
-    interactions: any[]
+    interactions: any
 }
 
 export {MapAfter, MapBefore, Structure, Portal, Interactions}

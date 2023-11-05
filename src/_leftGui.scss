@@ -29,13 +29,11 @@
 .brush-container{
     background-color: $tile-lighter;
     @include flex-c();
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 12vw;
     height: 80px;
     top: 30%;
     border-radius: 8px;
+    margin-block: 10px;
 }
 .brush-container:hover{
     background-color: #57718b;
@@ -50,35 +48,3 @@
     border-radius: 4px;
     
 }
-.eraser-container{
-    background-color: $tile-lighter;
-    @include flex-c();
-    position: absolute;
-    left: 0;
-    width: 12vw;
-    height: 80px;
-    bottom: 30%;
-    border-radius: 8px;
-}
-.eraser-container:hover{
-    cursor: pointer;
-    background-color: #57718b;
-}
-#eraser-icon{
-    width: 32px;
-    margin: 6px;
-    cursor: pointer;
-    padding: 6px;
-    background-color: #7392b1;
-    border-radius: 4px;
-}
-
-// #utils-left{
-//     @include flex-c();
-//     position: absolute;
-//     margin-top: 10vh;
-//     margin-bottom: 10vh;
-//     padding: 0 !important;
-//     height: 50vh;
-//     width: 14vw;
-// }

@@ -13,8 +13,9 @@ import atlasImg from './assets/atlas.png'
 
 let mouseDown:boolean = false;
 
-const brushElement = document.getElementById('brush-icon') as HTMLImageElement
-const eraserElement = document.getElementById('eraser-icon') as HTMLImageElement
+const brushButton = document.getElementById('brush-button') as HTMLButtonElement
+const eraserButton = document.getElementById('eraser-button') as HTMLButtonElement
+const collisionButton = document.getElementById('collision-button') as HTMLButtonElement
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 const ctx:CanvasRenderingContext2D = canvas?.getContext("2d") as CanvasRenderingContext2D;
 const backgroundBlockIdInput = document.getElementById('backgroundBlockId') as HTMLInputElement
@@ -66,15 +67,21 @@ async function start(){
     mouseEvents.changeCursor()
 }
 
-brushElement.addEventListener("click", () => {
+brushButton.addEventListener("click", () => {
     changeBrush(1)
     console.log(`brush changed to ${getBrush()}`)
 })
 
-eraserElement.addEventListener("click", () => {
+eraserButton.addEventListener("click", () => {
     changeBrush(0)
     console.log(`brush changed to ${getBrush()}`)
 })
+
+collisionButton.addEventListener("click", () => {
+    changeBrush(2)
+    console.log(`brush changed to ${getBrush()}`)
+})
+
 
 backgroundBlockIdInput.addEventListener("keyup", function(e:Event){
     const id = parseInt(this.value)
@@ -100,19 +107,14 @@ function calcutePositionInArray(x:number, y:number):number{
 function createMapObject(){
     const mapObj:MapBefore = { backgroundBlock: backgroundBlockId, structures: [], interactions: []}
 
-    const mapAfter:MapAfter = {backgroundBlockId: 0, mapString: "", collisionString: "", interactions: []}
+    const mapAfter:MapAfter = {backgroundBlockId: 0, mapString: "", collisionString: "", interactions: {}}
 
     blocksPlaced.forEach(block => {
         const [x, y] = block.getPosition()
         const id = block.getId()
-        console.log("Block: id", id, "pos: ", {x, y})
-        mapObj.structures.push({id,x,y,c: false})
-        // if(id != 7){
-        //     mapObj.structures.push({id,x,y,c: false})
-        // } else {
-        //     mapObj.structures.push({id,x,y,c: true})
-        // }
-
+        const c = block.getCollision()
+        // console.log("Block: id", id, "pos: ", {x, y})
+        mapObj.structures.push({id,x,y,c})
     })
 
     const len = 900
@@ -132,12 +134,10 @@ function createMapObject(){
         if(structure.c) collisionArray[position] = "1"
     })
 
-    // mapObj.
-
     mapAfter["backgroundBlockId"] = mapObj.backgroundBlock
     mapAfter["mapString"] = mapArray.toString().replace(/,/g, ';')
     mapAfter["collisionString"] = collisionArray.toString().replace(/,/g, '')
-    mapAfter["interactions"] = mapObj.interactions
+    mapAfter["interactions"] = {portals: []}
 
     return mapAfter
 }
@@ -175,7 +175,7 @@ resetBtn.addEventListener("click", (e:Event) => {
 
 saveBtn.addEventListener("click", async (e:Event) => {
     const map = createMapObject()
-    const json = await JSON.stringify({map: map})
+    const json = await JSON.stringify(map)
     console.log(json)
     // const response = await fetch(serverUrl + "/addmap", {
     //     method: "POST",
@@ -196,6 +196,8 @@ saveBtn.addEventListener("click", async (e:Event) => {
 
 canvas.addEventListener("mousedown", (event:MouseEvent) => {
     let {x, y} = getMousePos(event, canvas);
+    // ignore drawing outside of map bounds
+    if(x > 29 || y > 29 || x < 0 || y < 0) return
 
     mouseDown = true
 
@@ -209,24 +211,22 @@ canvas.addEventListener("mousedown", (event:MouseEvent) => {
         return
     }
 
-
-    // console.log(blocksPlaced.length)
-
-    const findBlock = blocksPlaced.find(block => block.getPosition()[0] === x && block.getPosition()[1] === y)
-
-    if(findBlock){
-        return
-    } 
-
- 
     if(getBrush() === 1){
-
-        // ignore drawing outside of map bounds
-        if(x > 29 || y > 29 || x < 0 || y < 0) return
-
+        const findBlock = blocksPlaced.find(block => block.getPosition()[0] === x && block.getPosition()[1] === y)
+        if(findBlock){
+            return
+        } 
         drawingLayer.drawBlock(selectedBlockId, x, y)
         blocksPlaced.push(new Block(selectedBlockId, x, y))
         updateLayers()
+    }
+
+    if(getBrush() === 2) {
+        const findBlock = blocksPlaced.find(block => block.getPosition()[0] === x && block.getPosition()[1] === y)
+        if(findBlock) {
+            drawingLayer.drawCollision(x, y)
+            findBlock.addCollision()
+        }
     }
     
 
@@ -236,28 +236,32 @@ canvas.addEventListener("mousedown", (event:MouseEvent) => {
 
 canvas.addEventListener("mousemove", (event:MouseEvent) => {            
     if(mouseDown == true){
+        let {x, y} = getMousePos(event, canvas);
+        // ignore drawing outside of map bounds
+        if(x > 29 || y > 29 || x < 0 || y < 0) return
+
         if(getBrush() === 0){
-            let {x, y} = getMousePos(event, canvas);
             console.log('erasing')
             drawingLayer.eraseBlock(x,y)
             const blockToEraseIndex = blocksPlaced.findIndex(block => block.getPosition()[0] === x && block.getPosition()[1] === y)
             if(blockToEraseIndex !== -1){
                 blocksPlaced.splice(blockToEraseIndex,1)
             }
-            
             updateLayers()
         }
         if(getBrush() === 1){
-            let {x, y} = getMousePos(event, canvas);
-
-            // ignore drawing outside of map bounds
-            if(x > 29 || y > 29 || x < 0 || y < 0) return
-            
             const findBlock = blocksPlaced.find(block => block.getPosition()[0] === x && block.getPosition()[1] === y)
             if(findBlock) return
             drawingLayer.drawBlock(selectedBlockId, x, y)
             blocksPlaced.push(new Block(selectedBlockId, x, y))
             updateLayers()
+        }
+        if(getBrush() === 2) {
+            const findBlock = blocksPlaced.find(block => block.getPosition()[0] === x && block.getPosition()[1] === y)
+            if(findBlock) {
+                drawingLayer.drawCollision(x, y)
+                findBlock.addCollision()
+            }
         }
     }
 })
