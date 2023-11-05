@@ -4,9 +4,9 @@
  export default class Atlas{
     
     private texturesImage:HTMLImageElement 
-    private width:number = 3200
+    private width:number = 32 * 8
     private blockWidth:number = 32
-    private blocksPerRow:number = 3200/32
+    private blocksPerRow:number = 8
     private blockId:[number,number][] = []
 
 
@@ -44,9 +44,10 @@
      */
     private cropForBlocks():void{
         this.blockId[0] = [-this.blockWidth, -this.blockWidth] // id = 0 is empty (air block) 
-        for (let i = 0; i < (this.blocksPerRow)**2; i++) {
-            const j = Math.floor(i/this.blocksPerRow)*this.blocksPerRow
-            this.blockId[i+1] = [(i-j)*this.blockWidth, j*this.blockWidth]
+        for (let i = 0; i < this.blocksPerRow; i++) {
+            for (let j = 0; j < this.blocksPerRow; j++) {
+                this.blockId[i*this.blocksPerRow + j + 1] = [j*this.blockWidth, i*this.blockWidth]
+            }            
         }
     }
 
@@ -56,6 +57,7 @@
      * @returns tuple where 0 index is sx of block and index 1 is sy of block 
      */
     public getBlockCoords(_id:number):[number, number]{
+        // console.log("block: ", _id, this.blockId[_id])
         return this.blockId[_id]
     }
 

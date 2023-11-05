@@ -8,7 +8,7 @@ import Atlas from "./Atlas"
 import './_style.scss'
 import Block from "./Block";
 import MouseEvents from "./MouseEvents";
-import atlasImg from './assets/img/atlas.png'
+import atlasImg from './assets/atlas.png'
 
 
 let mouseDown:boolean = false;
@@ -40,8 +40,10 @@ let stuctures:Structure[]
 
 // const atlasUrl = "http://192.168.8.101:4444/getatlas"
 
-const serverUrl = "https://squ3-server.herokuapp.com"
-const atlasUrl = serverUrl + "/getatlas"
+// const serverUrl = "https://squ3-server.herokuapp.com"
+// const atlasUrl = serverUrl + "/getatlas"
+const atlasUrl = atlasImg
+
 
 function updateLayers() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -85,7 +87,7 @@ backgroundBlockIdInput.addEventListener("keyup", function(e:Event){
 
 function createTextureSelector(){
     const url = atlasUrl
-    for (let i = 1; i < 100; i++) {
+    for (let i = 1; i < 19; i++) {
         const createdTile = createTile(i, url)
         document.getElementById("texture-selector-container")?.append(createdTile)
     }
@@ -103,7 +105,13 @@ function createMapObject(){
     blocksPlaced.forEach(block => {
         const [x, y] = block.getPosition()
         const id = block.getId()
+        console.log("Block: id", id, "pos: ", {x, y})
         mapObj.structures.push({id,x,y,c: false})
+        // if(id != 7){
+        //     mapObj.structures.push({id,x,y,c: false})
+        // } else {
+        //     mapObj.structures.push({id,x,y,c: true})
+        // }
 
     })
 
@@ -116,12 +124,15 @@ function createMapObject(){
         collisionArray[i] = "0"
     }
 
+
     
     mapObj.structures.forEach((structure:Structure) => {
         const position = calcutePositionInArray(structure.x, structure.y)
         mapArray[position] = structure.id.toString()
         if(structure.c) collisionArray[position] = "1"
     })
+
+    // mapObj.
 
     mapAfter["backgroundBlockId"] = mapObj.backgroundBlock
     mapAfter["mapString"] = mapArray.toString().replace(/,/g, ';')
@@ -165,22 +176,22 @@ resetBtn.addEventListener("click", (e:Event) => {
 saveBtn.addEventListener("click", async (e:Event) => {
     const map = createMapObject()
     const json = await JSON.stringify({map: map})
-
-    const response = await fetch(serverUrl + "/addmap", {
-        method: "POST",
-        mode: "cors",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: json
-    })
-    const responseJson = await response.json()
-    const mapIdElem = document.getElementById('map-id') as HTMLElement
+    console.log(json)
+    // const response = await fetch(serverUrl + "/addmap", {
+    //     method: "POST",
+    //     mode: "cors",
+    //     headers: {
+    //         "Content-Type": "application/json"
+    //     },
+    //     body: json
+    // })
+    // const responseJson = await response.json()
+    // const mapIdElem = document.getElementById('map-id') as HTMLElement
     
-    mapIdElem.setAttribute("href", serverUrl + '/game?id=' + responseJson.id)
-    mapIdElem.innerText = serverUrl + '/game?id=' + responseJson.id
-    mapIdElem.style.visibility = "visible"
-    console.log(responseJson)
+    // mapIdElem.setAttribute("href", serverUrl + '/game?id=' + responseJson.id)
+    // mapIdElem.innerText = serverUrl + '/game?id=' + responseJson.id
+    // mapIdElem.style.visibility = "visible"
+    // console.log(responseJson)
 })
 
 canvas.addEventListener("mousedown", (event:MouseEvent) => {
@@ -199,7 +210,7 @@ canvas.addEventListener("mousedown", (event:MouseEvent) => {
     }
 
 
-    console.log(blocksPlaced.length)
+    // console.log(blocksPlaced.length)
 
     const findBlock = blocksPlaced.find(block => block.getPosition()[0] === x && block.getPosition()[1] === y)
 
@@ -209,6 +220,10 @@ canvas.addEventListener("mousedown", (event:MouseEvent) => {
 
  
     if(getBrush() === 1){
+
+        // ignore drawing outside of map bounds
+        if(x > 29 || y > 29 || x < 0 || y < 0) return
+
         drawingLayer.drawBlock(selectedBlockId, x, y)
         blocksPlaced.push(new Block(selectedBlockId, x, y))
         updateLayers()
@@ -235,6 +250,9 @@ canvas.addEventListener("mousemove", (event:MouseEvent) => {
         if(getBrush() === 1){
             let {x, y} = getMousePos(event, canvas);
 
+            // ignore drawing outside of map bounds
+            if(x > 29 || y > 29 || x < 0 || y < 0) return
+            
             const findBlock = blocksPlaced.find(block => block.getPosition()[0] === x && block.getPosition()[1] === y)
             if(findBlock) return
             drawingLayer.drawBlock(selectedBlockId, x, y)
